@@ -15,12 +15,14 @@ class LoadingSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? SizedBox(
-            width: size,
-            height: size,
-            child: const CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white,
+        ? Center(
+            child: SizedBox(
+              width: size,
+              height: size,
+              child: const CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
             ),
           )
         : child;
