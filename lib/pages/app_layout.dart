@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_instagram_clone/providers/user_provider.dart';
 import 'package:flutter_instagram_clone/widgets/loading_switch.dart';
+import 'package:flutter_instagram_clone/pages/account_page.dart';
 
 class NavigationItem {
   const NavigationItem({
@@ -58,6 +59,13 @@ class _AppLayoutState extends State<AppLayout> {
   void _update() async {
     userProvider = Provider.of<UserProvider>(context, listen: false);
     await userProvider.updateCurrentUser();
+
+    _navigationItems.last = NavigationItem(
+      label: "",
+      icon: const Icon(Icons.account_circle),
+      child: AccountPage(user: userProvider.getUser),
+    );
+
     setState(() => _isLoading = false);
   }
 

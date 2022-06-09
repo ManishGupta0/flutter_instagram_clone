@@ -93,7 +93,7 @@ class AuthServices {
     }
   }
 
-  static Future<void> signOutUser() async {
+  static Future<void> logOutUser() async {
     await _auth.signOut();
   }
 
