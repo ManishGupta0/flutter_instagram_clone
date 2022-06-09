@@ -39,13 +39,23 @@ class UserModel {
     };
   }
 
+  Map<String, dynamic> toMiniMap() {
+    return {
+      'uid': uid,
+      'username': username,
+      'fullname': fullname,
+      'latestStoryId': latestStoryId,
+      'profileImage': profileImageUrl,
+    };
+  }
+
   factory UserModel.fromMap(Map<String, dynamic> json) {
     return UserModel(
       uid: json["uid"],
       username: json["username"],
       fullname: json["fullname"],
-      email: json["email"],
-      bio: json["bio"],
+      email: json["email"] ?? "",
+      bio: json["bio"] ?? "",
       latestStoryId: json["latestStoryId"],
       profileImageUrl: json["profileImage"],
       followers: json["followers"] == null

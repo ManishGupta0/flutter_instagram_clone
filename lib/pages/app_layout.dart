@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_instagram_clone/providers/user_provider.dart';
 import 'package:flutter_instagram_clone/widgets/loading_switch.dart';
+import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
 import 'package:flutter_instagram_clone/pages/search_page.dart';
 import 'package:flutter_instagram_clone/pages/shop_page.dart';
 import 'package:flutter_instagram_clone/pages/account_page.dart';
+import 'package:flutter_instagram_clone/pages/add_page_layout.dart';
 
 class NavigationItem {
   const NavigationItem({
@@ -41,10 +43,10 @@ class _AppLayoutState extends State<AppLayout> {
       icon: Icon(Icons.search),
       child: SearchPage(),
     ),
-    NavigationItem(
+    const NavigationItem(
       label: "",
-      icon: const Icon(Icons.add_box_outlined),
-      child: Container(),
+      icon: Icon(Icons.add_box_outlined),
+      child: SizedBox(),
     ),
     const NavigationItem(
       label: "",
@@ -93,7 +95,16 @@ class _AppLayoutState extends State<AppLayout> {
               )
               .toList(),
           onTap: (index) {
-            setState(() => _currentPageIndex = index);
+            if (index == 2) {
+              Navigator.push(
+                context,
+                CustomPageRoute.fromLeft(
+                  child: const AddPageLayout(),
+                ),
+              );
+            } else {
+              setState(() => _currentPageIndex = index);
+            }
           },
         ),
         body: _navigationItems.elementAt(_currentPageIndex).child,

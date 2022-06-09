@@ -6,6 +6,7 @@ import 'package:flutter_instagram_clone/globals/globals.dart';
 import 'package:flutter_instagram_clone/globals/themes.dart';
 import 'package:flutter_instagram_clone/providers/user_provider.dart';
 import 'package:flutter_instagram_clone/services/auth_services.dart';
+import 'package:flutter_instagram_clone/widgets/loading_overlay.dart';
 import 'package:flutter_instagram_clone/pages/log_in_page.dart';
 import 'package:flutter_instagram_clone/pages/app_layout.dart';
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: backgroundColor,
         ),
+        builder: (_, child) => LoadingOverlay(child: child!),
         home: StreamBuilder(
           stream: AuthServices.authStateChanges(),
           builder: (_, snapshot) {
