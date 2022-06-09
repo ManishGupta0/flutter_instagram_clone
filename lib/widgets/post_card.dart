@@ -13,6 +13,7 @@ import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
 import 'package:flutter_instagram_clone/widgets/profile_bubble.dart';
 import 'package:flutter_instagram_clone/widgets/pulse_animation.dart';
 import 'package:flutter_instagram_clone/pages/comment_page.dart';
+import 'package:flutter_instagram_clone/pages/likes_page.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
@@ -209,7 +210,14 @@ class _PostCardState extends State<PostCard> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 child: Text("${widget.post.likes.length} Likes"),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    CustomPageRoute.fromRight(
+                      child: LikesPage(likes: widget.post.likes),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 4),
               RichText(

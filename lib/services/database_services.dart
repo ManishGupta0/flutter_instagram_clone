@@ -226,4 +226,42 @@ class DatabaseServices {
       return throw error.toString();
     }
   }
+
+  static Future<bool> toggleUserFollow({
+    required UserModel user,
+    required UserModel follow,
+  }) async {
+    try {
+      // already following
+      if (user.followings!.any((element) => element.uid == follow.uid)) {
+        await _firestore.collection(Names.usersDatabase).doc(user.uid).update(
+          {
+            "followings": FieldValue.arrayRemove([follow.toMiniMap()]),
+          },
+        );
+
+        await _firestore.collection(Names.usersDatabase).doc(follow.uid).update(
+          {
+            "followers": FieldValue.arrayRemove([user.toMiniMap()]),
+          },
+        );
+      }
+      // follow now
+      else {
+        await _firestore.collection(Names.usersDatabase).doc(user.uid).update(
+          {
+            "followings": FieldValue.arrayUnion([follow.toMiniMap()]),
+          },
+        );
+        await _firestore.collection(Names.usersDatabase).doc(follow.uid).update(
+          {
+            "followers": FieldValue.arrayUnion([user.toMiniMap()]),
+          },
+        );
+      }
+      return true;
+    } catch (error) {
+      return throw error.toString();
+    }
+  }
 }
