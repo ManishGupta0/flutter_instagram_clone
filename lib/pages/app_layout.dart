@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_instagram_clone/providers/user_provider.dart';
 import 'package:flutter_instagram_clone/widgets/loading_switch.dart';
+import 'package:flutter_instagram_clone/pages/search_page.dart';
+import 'package:flutter_instagram_clone/pages/shop_page.dart';
 import 'package:flutter_instagram_clone/pages/account_page.dart';
 
 class NavigationItem {
@@ -34,20 +36,20 @@ class _AppLayoutState extends State<AppLayout> {
       icon: const Icon(Icons.home),
       child: Container(),
     ),
-    NavigationItem(
+    const NavigationItem(
       label: "",
-      icon: const Icon(Icons.search),
-      child: Container(),
+      icon: Icon(Icons.search),
+      child: SearchPage(),
     ),
     NavigationItem(
       label: "",
       icon: const Icon(Icons.add_box_outlined),
       child: Container(),
     ),
-    NavigationItem(
+    const NavigationItem(
       label: "",
-      icon: const Icon(Icons.shopping_bag_outlined),
-      child: Container(),
+      icon: Icon(Icons.shopping_bag_outlined),
+      child: ShopPage(),
     ),
     NavigationItem(
       label: "",
