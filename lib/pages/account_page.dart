@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_instagram_clone/models/user_model.dart';
 import 'package:flutter_instagram_clone/providers/user_provider.dart';
 import 'package:flutter_instagram_clone/services/auth_services.dart';
+import 'package:flutter_instagram_clone/services/database_services.dart';
 import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
 import 'package:flutter_instagram_clone/widgets/profile_bubble.dart';
+import 'package:flutter_instagram_clone/widgets/user_suggestion_card.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({
@@ -318,31 +320,45 @@ class _AccountPageState extends State<AccountPage>
             valueListenable: _showUserSuggestions,
             builder: (_, value, __) {
               if (value) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 24),
-                    const Text("Discover People"),
-                    const SizedBox(height: 8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: List.generate(
-                          10,
-                          (index) {
-                            return Container(
-                              width: 100,
-                              height: 100,
-                              color: Colors.grey,
-                              margin: const EdgeInsets.only(right: 4),
-                            );
-                          },
-                        ),
-                      ),
+                return Consumer<UserProvider>(
+                  builder: (_, provider, __) => FutureBuilder<List<UserModel>>(
+                    future: DatabaseServices.getUserSuggestions(
+                      _userProvider.getUser,
                     ),
-                  ],
+                    builder: (_, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isEmpty) return const SizedBox();
+                        if (snapshot.data!.length == 1 &&
+                            snapshot.data!.first.uid == widget.user.uid) {
+                          return const SizedBox();
+                        }
+                        return Column(
+                          children: [
+                            const SizedBox(height: 24),
+                            const Text("Discover People"),
+                            const SizedBox(height: 24),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: snapshot.data!.map(
+                                  (user) {
+                                    if (user.uid != widget.user.uid) {
+                                      return UserSuggestionCard(user: user);
+                                    }
+                                    return const SizedBox();
+                                  },
+                                ).toList(),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return const SizedBox();
+                    },
+                  ),
                 );
               }
+
               return const SizedBox();
             },
           ),

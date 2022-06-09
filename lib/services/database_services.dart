@@ -264,4 +264,18 @@ class DatabaseServices {
       return throw error.toString();
     }
   }
+
+  static Future<List<UserModel>> getUserSuggestions(UserModel user) async {
+    var followings = user.followings!.map((e) => e.uid).toList();
+
+    var query = _firestore.collection(Names.usersDatabase).where(
+          "uid",
+          isNotEqualTo: user.uid,
+        );
+
+    var snapshot = await query.get();
+
+    return snapshot.docs.map((e) => UserModel.fromMap(e.data())).toList()
+      ..retainWhere((element) => !followings.contains(element.uid));
+  }
 }
