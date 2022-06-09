@@ -37,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
       password: _passWordController.text,
     ).then((value) {
       setState(() => _isLoading = false);
-      showSnackBar("Login Success");
     }).catchError((error) {
       setState(() => _isLoading = false);
       showSnackBar(error.toString());

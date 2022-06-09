@@ -9,6 +9,7 @@ import 'package:flutter_instagram_clone/widgets/logo.dart';
 import 'package:flutter_instagram_clone/widgets/input_text_field.dart';
 import 'package:flutter_instagram_clone/widgets/loading_switch.dart';
 import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
+import 'package:flutter_instagram_clone/pages/app_layout.dart';
 import 'package:flutter_instagram_clone/pages/log_in_page.dart';
 
 class SignupPage extends StatefulWidget {
@@ -58,7 +59,12 @@ class _SignupPageState extends State<SignupPage> {
       imageBytes: _profileImage,
     ).then((value) {
       setState(() => _isLoading = false);
-      showSnackBar("Sign up Success");
+      Navigator.pushReplacement(
+        context,
+        CustomPageRoute.fromUp(
+          child: const AppLayout(),
+        ),
+      );
     }).catchError((error) {
       setState(() => _isLoading = false);
       showSnackBar(error.toString());
