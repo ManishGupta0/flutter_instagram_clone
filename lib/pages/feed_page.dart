@@ -12,6 +12,7 @@ import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
 import 'package:flutter_instagram_clone/widgets/post_card.dart';
 import 'package:flutter_instagram_clone/widgets/profile_bubble.dart';
 import 'package:flutter_instagram_clone/pages/add_page_layout.dart';
+import 'package:flutter_instagram_clone/pages/story_page.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -152,7 +153,14 @@ class _FeedPageState extends State<FeedPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: ProfileBubble(
                         user: user,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CustomPageRoute.fromRight(
+                              child: StoryPage(user: user),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },

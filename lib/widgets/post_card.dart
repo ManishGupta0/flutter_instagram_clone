@@ -14,6 +14,7 @@ import 'package:flutter_instagram_clone/widgets/profile_bubble.dart';
 import 'package:flutter_instagram_clone/widgets/pulse_animation.dart';
 import 'package:flutter_instagram_clone/pages/comment_page.dart';
 import 'package:flutter_instagram_clone/pages/likes_page.dart';
+import 'package:flutter_instagram_clone/pages/story_page.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
@@ -87,6 +88,23 @@ class _PostCardState extends State<PostCard> {
                 user: widget.post.user,
                 width: 40,
                 withText: false,
+                onTap: () {
+                  if (widget.post.user.latestStoryId.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      CustomPageRoute.fromRight(
+                        child: StoryPage(user: widget.post.user),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      CustomPageRoute.fromRight(
+                        child: AccountPage(user: widget.post.user),
+                      ),
+                    );
+                  }
+                },
               ),
               const SizedBox(width: 8),
               Expanded(
