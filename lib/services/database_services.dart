@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_instagram_clone/globals/constants.dart';
 import 'package:flutter_instagram_clone/models/post_model.dart';
 import 'package:flutter_instagram_clone/models/user_model.dart';
+import 'package:flutter_instagram_clone/models/comment_model.dart';
 import 'package:flutter_instagram_clone/services/storage_services.dart';
 
 class DatabaseServices {
@@ -130,6 +131,97 @@ class DatabaseServices {
           await _firestore.collection(collection).doc(post.uid).get();
 
       return PostModel.fromMap(snapshot.data()!);
+    } catch (error) {
+      return throw error.toString();
+    }
+  }
+
+  static Future<bool> addComment({
+    required PostModel post,
+    required UserModel user,
+    required String commentText,
+    String? parentCommentId,
+    bool isStory = false,
+  }) async {
+    var collection = isStory ? Names.storyDatabase : Names.postsDatabase;
+    try {
+      if (commentText.isNotEmpty) {
+        var commentId = const Uuid().v1();
+
+        var comment = CommentModel(
+          uid: commentId,
+          postId: post.uid,
+          parentCommentId: parentCommentId ?? "",
+          user: user,
+          comment: commentText,
+          date: DateTime.now(),
+          likes: [],
+        );
+
+        await _firestore
+            .collection(collection)
+            .doc(post.uid)
+            .collection(Names.commentCollection)
+            .doc(commentId)
+            .set(comment.toMap());
+
+        return true;
+      } else {
+        return throw "Please enter comment";
+      }
+    } catch (error) {
+      return throw error.toString();
+    }
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getPostCommentsStream({
+    required PostModel post,
+    String? parentCommentId,
+  }) {
+    var ref = _firestore
+        .collection(Names.postsDatabase)
+        .doc(post.uid)
+        .collection(Names.commentCollection);
+
+    if (parentCommentId != null && parentCommentId.isNotEmpty) {
+      return ref
+          .where("parentCommentId", isEqualTo: parentCommentId)
+          .snapshots();
+    }
+
+    return ref.where("parentCommentId", isEqualTo: "").snapshots();
+  }
+
+  static Future<bool> toggleCommentLike({
+    required CommentModel comment,
+    required UserModel user,
+  }) async {
+    try {
+      // already liked
+      if (comment.likes.any((element) => element.uid == user.uid)) {
+        await _firestore
+            .collection(Names.postsDatabase)
+            .doc(comment.postId)
+            .collection(Names.commentCollection)
+            .doc(comment.uid)
+            .update({
+          "likes": FieldValue.arrayRemove([user.toMiniMap()]),
+        });
+      } else {
+        // new like
+        await _firestore
+            .collection(Names.postsDatabase)
+            .doc(comment.postId)
+            .collection(Names.commentCollection)
+            .doc(comment.uid)
+            .update(
+          {
+            "likes": FieldValue.arrayUnion([user.toMiniMap()]),
+          },
+        );
+      }
+
+      return true;
     } catch (error) {
       return throw error.toString();
     }

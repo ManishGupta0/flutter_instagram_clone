@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -107,10 +108,12 @@ class _FeedPageState extends State<FeedPage> {
             icon: const Icon(Icons.favorite_border),
             onPressed: () {},
           ),
-          IconButton(
-            splashRadius: 1,
-            icon: const Icon(Icons.send_outlined),
-            onPressed: () {},
+          Transform.rotate(
+            angle: -math.pi / 6,
+            child: IconButton(
+              icon: const Icon(Icons.send_outlined),
+              onPressed: () {},
+            ),
           ),
         ],
       ),

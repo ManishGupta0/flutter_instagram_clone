@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_instagram_clone/pages/account_page.dart';
 import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
 import 'package:flutter_instagram_clone/widgets/profile_bubble.dart';
 import 'package:flutter_instagram_clone/widgets/pulse_animation.dart';
+import 'package:flutter_instagram_clone/pages/comment_page.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
@@ -46,7 +48,6 @@ class _PostCardState extends State<PostCard> {
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
-    getCommentCount();
   }
 
   void likePost() async {
@@ -71,6 +72,7 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    getCommentCount();
     _isLiked = widget.post.likes
         .any((element) => element.uid == _userProvider.getUser.uid);
     return Column(
@@ -148,23 +150,35 @@ class _PostCardState extends State<PostCard> {
               isAnimating: _isLiked,
               alwaysAnimate: true,
               child: IconButton(
-                  splashRadius: 1,
-                  splashColor: Colors.transparent,
-                  color: _isLiked ? Colors.red : null,
-                  icon: Icon(_isLiked ? Icons.favorite : Icons.favorite_border),
-                  onPressed: () {
-                    if (_canLike) togglePostLike();
-                  }),
+                splashRadius: 1,
+                splashColor: Colors.transparent,
+                color: _isLiked ? Colors.red : null,
+                icon: Icon(_isLiked ? Icons.favorite : Icons.favorite_border),
+                onPressed: () {
+                  if (_canLike) togglePostLike();
+                },
+              ),
             ),
             IconButton(
               splashRadius: 1,
               icon: const Icon(Icons.comment_outlined),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  CustomPageRoute.fromRight(
+                    child: CommentPage(
+                      post: widget.post,
+                    ),
+                  ),
+                );
+              },
             ),
-            IconButton(
-              splashRadius: 1,
-              icon: const Icon(Icons.send),
-              onPressed: () {},
+            Transform.rotate(
+              angle: -math.pi / 6,
+              child: IconButton(
+                icon: const Icon(Icons.send_outlined),
+                onPressed: () {},
+              ),
             ),
             Flexible(child: Container()),
             PulseAnimation(
@@ -174,7 +188,8 @@ class _PostCardState extends State<PostCard> {
                 splashRadius: 1,
                 splashColor: Colors.transparent,
                 icon: Icon(
-                    _isBookmarked ? Icons.bookmark : Icons.bookmark_outline),
+                  _isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+                ),
                 onPressed: () {
                   setState(() => _isBookmarked = !_isBookmarked);
                 },
@@ -206,7 +221,15 @@ class _PostCardState extends State<PostCard> {
                   children: [
                     TextSpan(
                       text: widget.post.user.username,
-                      recognizer: TapGestureRecognizer()..onTap = () {},
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            CustomPageRoute.fromRight(
+                              child: AccountPage(user: widget.post.user),
+                            ),
+                          );
+                        },
                     ),
                     TextSpan(
                       text: " ${widget.post.description}",
@@ -220,7 +243,16 @@ class _PostCardState extends State<PostCard> {
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   child: Text("View all $commentCount comments"),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      CustomPageRoute.fromRight(
+                        child: CommentPage(
+                          post: widget.post,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               const SizedBox(height: 4),
               Text(MyDateUtils.dateAgo(widget.post.date)),
