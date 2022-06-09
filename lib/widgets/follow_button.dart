@@ -4,7 +4,6 @@ import 'package:flutter_instagram_clone/models/user_model.dart';
 import 'package:flutter_instagram_clone/providers/user_provider.dart';
 import 'package:flutter_instagram_clone/utils/widget_utils.dart';
 import 'package:flutter_instagram_clone/services/database_services.dart';
-import 'package:flutter_instagram_clone/widgets/loading_switch.dart';
 
 class FollowButton extends StatefulWidget {
   const FollowButton({
@@ -60,18 +59,38 @@ class _FollowButtonState extends State<FollowButton> {
     }
     return _isFollowing
         ? OutlinedButton(
-            onPressed: _isLoading ? null : () => followUser(),
-            child: LoadingSwitch(
-              isLoading: _isLoading,
-              child: const Text("Following"),
-            ),
+            onPressed: _isLoading
+                ? null
+                : () {
+                    followUser();
+                  },
+            child: !_isLoading
+                ? const Text("Following")
+                : const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  ),
           )
         : ElevatedButton(
-            onPressed: _isLoading ? null : () => followUser(),
-            child: LoadingSwitch(
-              isLoading: _isLoading,
-              child: const Text("Follow"),
-            ),
+            onPressed: _isLoading
+                ? null
+                : () {
+                    followUser();
+                  },
+            child: !_isLoading
+                ? const Text("Follow")
+                : const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  ),
           );
   }
 }

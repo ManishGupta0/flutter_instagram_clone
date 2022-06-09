@@ -7,6 +7,7 @@ import 'package:flutter_instagram_clone/services/database_services.dart';
 import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
 import 'package:flutter_instagram_clone/widgets/profile_bubble.dart';
 import 'package:flutter_instagram_clone/widgets/user_suggestion_card.dart';
+import 'package:flutter_instagram_clone/pages/following_page.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({
@@ -35,6 +36,10 @@ class _AccountPageState extends State<AccountPage>
 
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     _tabController = TabController(length: 3, vsync: this);
+
+    DatabaseServices.getPosts(user: widget.user)
+        .length
+        .then((value) => setState(() => postCount = value));
   }
 
   @override
@@ -96,54 +101,80 @@ class _AccountPageState extends State<AccountPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
+          Consumer<UserProvider>(
+            builder: (_, value, __) {
+              UserModel user = widget.user;
+              if (value.getUser.uid == widget.user.uid) {
+                user = value.getUser;
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ProfileBubble(
-                      user: widget.user,
-                      withText: false,
+                    Column(
+                      children: [
+                        ProfileBubble(
+                          user: user,
+                          withText: false,
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Text("$postCount"),
+                          const Text("Posts"),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Text("${user.followers!.length}"),
+                            const Text("Followers"),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CustomPageRoute.fromRight(
+                            child: FollowingsPage(user: user),
+                          ),
+                        );
+                      },
+                    ),
+                    InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Text("${user.followings!.length}"),
+                            const Text("Following"),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CustomPageRoute.fromRight(
+                            child: FollowingsPage(
+                              user: user,
+                              initialIndex: 1,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Text("$postCount"),
-                      const Text("Posts"),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text("${widget.user.followers!.length}"),
-                        const Text("Followers"),
-                      ],
-                    ),
-                  ),
-                  onTap: () {},
-                ),
-                InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text("${widget.user.followings!.length}"),
-                        const Text("Following"),
-                      ],
-                    ),
-                  ),
-                  onTap: () {},
-                ),
-              ],
-            ),
+              );
+            },
           ),
           const SizedBox(height: 12),
           // user name below profile pic
