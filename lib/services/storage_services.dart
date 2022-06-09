@@ -21,4 +21,9 @@ class StorageServices {
     var downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
   }
+
+  static Future<bool> deleteImage(String url) async {
+    await _storage.refFromURL(url).delete();
+    return true;
+  }
 }

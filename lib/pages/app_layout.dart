@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_instagram_clone/providers/user_provider.dart';
 import 'package:flutter_instagram_clone/widgets/loading_switch.dart';
 import 'package:flutter_instagram_clone/widgets/custom_page_route.dart';
+import 'package:flutter_instagram_clone/pages/feed_page.dart';
 import 'package:flutter_instagram_clone/pages/search_page.dart';
 import 'package:flutter_instagram_clone/pages/shop_page.dart';
 import 'package:flutter_instagram_clone/pages/account_page.dart';
@@ -33,10 +34,10 @@ class _AppLayoutState extends State<AppLayout> {
 
   late UserProvider userProvider;
   final List<NavigationItem> _navigationItems = [
-    NavigationItem(
+    const NavigationItem(
       label: "",
-      icon: const Icon(Icons.home),
-      child: Container(),
+      icon: Icon(Icons.home),
+      child: FeedPage(),
     ),
     const NavigationItem(
       label: "",

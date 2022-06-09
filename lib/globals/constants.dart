@@ -6,4 +6,6 @@ class Names {
   static const String userStorage = "users";
   static const String postStorage = "posts";
   static const String storyStorage = "stories";
+
+  static const String commentCollection = "comments";
 }
